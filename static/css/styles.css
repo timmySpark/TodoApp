@@ -1,7 +1,18 @@
 .app-container {
-    height: 100vh;
-    width: 100%;
-  }
-  .complete {
-    text-decoration: line-through;
-  }
+  height: 100vh;
+  width: 100%;
+}
+.complete {
+  text-decoration: line-through;
+}
+
+#list1 .form-control {
+  border-color: transparent;
+}
+#list1 .form-control:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+#list1 .select-input.form-control[readonly]:not([disabled]) {
+  background-color: #fbfbfb;
+}

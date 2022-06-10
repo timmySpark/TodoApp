@@ -1,4 +1,8 @@
 {% load static %}
+{% load humanize%}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,91 +10,213 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
   <body>
-    <!-- <div class="main col-md-6 offset-3">
-      <div class="my-5">
-        <h1>Todo App</h1>
-        <form class="inline-form">
-          <div class="input-group mb-3">
-            <input
-              type="text"
-              class="form-control col-md-6"
-              placeholder="Add Todo..."
-            />
-            <div class="input-group-append">
-              <button class="btn btn-primary px-5" type="button">Button</button>
+    <section class="vh-100">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col">
+            <div class="card" id="list1"  style="border-radius: 0.75rem; background-color: #eff1f2">
+              <div class="card-body py-4 px-4 px-md-5">
+                <p class="h1 text-center mt-3 mb-4 pb-3 text-primary">
+                  <i class="fas fa-check-square me-1"></i>
+                  <u>Todo App</u>
+                </p>
+                
+                <div class="pb-2">
+                  <div class="card">
+                    <div class="card-body">
+                      <form method="POST" novalidate> {% csrf_token %} 
+                      <div class="d-flex flex-column">
+                          {{form.item|attr:"placeholder:Add new..."|add_class:"form-control form-control-lg w-100 border-secondary"|as_crispy_field}}
+                          {{form.status|add_class:"form-control form-control-lg w-100 border-secondary"|as_crispy_field}}
+                          <div>                       
+                           <button type="submit" class="btn w-100 btn-primary"> Add</button>
+                        </div>
+                      </div>       
+    
+                        </form>
+                     </div>  
+                    </div>
+                </div>
+        <hr class="my-4" />
+        {% for item in items%}
+        <ul
+          class="list-group list-group-horizontal rounded-0 bg-transparent"
+        >
+          <li
+            class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent"
+          >
+            <div class="form-check">
+              <input
+                class="form-check-input complete me-0"
+                type="checkbox"
+                value=""
+                id="flexCheckChecked1"
+                aria-label="..."
+              />
+            </div>
+          </li>
+          <li
+            class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent"
+          >
+            <p class="lead fw-normal mb-0">
+              {{item.item}}
+            </p>
+          </li>
+
+          <li
+            class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent"
+          >
+            <div class="d-flex flex-row justify-content-end mb-1">
+              <a
+                href="{% url 'update' item.id %}"
+                class="text-info"
+                data-mdb-toggle="tooltip"
+                title="Edit todo"
+                ><i class="fas fa-pencil-alt me-3"></i
+              ></a>
+              <a
+                href="#!"
+                class="text-danger"
+                data-toggle="modal"
+                data-target ="#myModal"
+                data-mdb-toggle="tooltip"
+                title="Delete todo"
+                ><i class="fas fa-trash-alt"></i
+              ></a>
+            </div>
+            <div class="text-end text-muted">
+              <a
+                href="#!"
+                class="text-muted"
+                data-mdb-toggle="tooltip"
+                title="Created date"
+              >
+                <p class="small mb-0">
+                  <i class="fas fa-info-circle me-2"></i>{{item.created_at|naturaltime}}
+                </p>
+              </a>
+            </div>
+          </li>
+        </ul>
+        <div class="modal" tabindex="-1" id="myModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to Delete ?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn bg-danger">
+                  <a href="{% url 'delete' item.id %}" class="text-decoration-none  text-light">Delete</a></button>
+                <button type="button" class="btn btn-success"  data-dismiss="modal">No</button>
+              </div>
             </div>
           </div>
-        </form>
-      </div>
-
-      <div class="table-striped table-hover table-responsive text-center">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>S/N</th>
-              <th>Todo</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>A new todo</td>
-              <td>
-                <button class="btn btn-success">Edit</button> |
-                <button class="btn btn-danger">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div> -->
-
-    <div
-      class="app-container d-flex align-items-center justify-content-center flex-column">
-      <!-- Lazy -->
-      <h3>Todo App</h3>
-      <div class="d-flex align-items-center mb-3">
-        <div class="form-group mr-3 mb-0">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Enter a task here"
-          />
         </div>
-        <button type="button" class="btn btn-primary mr-3">Save</button>
-        <!-- <button type="button" class="btn btn-warning">Get Tasks</button> -->
+
+        {% endfor %}
       </div>
-      <!-- Lazy -->
-      <div class="table-wrapper">
+    </section>
+      
+     
+    {% for message in messages  %}
+            <div class =" mes text-dark border-danger text-center" >{{message}}</div>
+    {% endfor %}
+
+    <script type="text/javascript">
+      window.setTimeout(function(){
+        $(".mes").fadeTo(700,0).slideUp(500,function(){
+          $(this).remove();
+        
+        })
+      },2000);
+    </script>
+    
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+     <!-- MDB -->
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+{% comment %} 
+ <!-- Todo App section --> 
+ <h3 class="mt-5">Todo App</h3>
+ <div class="d-flex align-items-center mb-3"> 
+   <form method="POST" novalidate> {% csrf_token %}
+   <div class="form-group mr-3 mb-0 ">
+     {{form.item|attr:"placeholder:Enter todo item"|as_crispy_field}}
+     {{form.status|as_crispy_field}}
+
+   </div>
+   <input type="submit" class="btn btn-primary mr-3 mt-4 w-100"/>
+ </div>
+</form> {% endcomment %}
+
+ <!-- Lazy -->
+      {% comment %} <div class="table-wrapper">
+        
         <table class="table table-hover table-striped table-bordered">
           <thead>
             <tr>
               <th>No.</th>
               <th>Todo item</th>
+              <th>Created at</th>
               <th>status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="">
-              <td>1</td>
-              <td class="task">A new todo</td>
-              <td>In progress</td>
-              <td>
-                  <button class="btn btn-success">Edit</button>
-                <button class="btn btn-danger">Delete</button>
-              </td>
-            </tr>
-          </tbody>
+            {% for item in items%}
+              <tr class="">
+                <td>{{forloop.counter}}</td>
+                <td class="task">{{item.item}}</td>
+                <td class="task">{{item.created_at|naturaltime}}</td>
+                <td class="text-center">{{item.status}}</td>
+                <td>
+                  <button class="btn btn-success"><a href="{% url 'update' item.id %}">Edit</a></button>
+                  <button class="btn btn-danger" data-toggle="modal" data-target ="#myModal">Delete</button>
+                </td>
+              </tr>
+
+             
+              
+          
+            {% endfor %}
+            
+          </tbody> 
         </table>
       </div>
-    </div>
-    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  </body>
-</html>
+    </div>  {% endcomment %}
